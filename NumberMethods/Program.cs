@@ -4,17 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PMN
-{
-    class Program
-    {
-        public static void Main(string[] args)
-        {
-            Lab1_1.Exec(); // Done
-            //Lab1_2.Exec(); // Done
+namespace PMN {
+    class Program {
+        public static void Main(string[] args) {
             //Lab2.Exec(); // Done 
-            //Lab3.Exec();
-            //Lab4.Exec(); // Done !
+            Lab3.Exec(); // Done
             //Lab5.Exec();
             //Lab6.Exec();
             //Lab7.Exec();
@@ -22,7 +16,6 @@ namespace PMN
             //Lab9.Exec();
             //Lab10.Exec(); // Done
             //Lab11.Exec();
-            //Lab12.Exec(); // Done !
             //Lab13.Exec();
             //Lab14.Exec();
 

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace PMN
-{
-    class Lab2
-    {
+namespace PMN {
+    class Lab2 {
         private const double a = 0;
         private const double b = Math.PI;
         private const double h = Math.PI / 5;
@@ -17,57 +15,45 @@ namespace PMN
         private static List<double> ds = new List<double>(n);
         private static List<double> bs = new List<double>(n);
 
-        private static double Func(double x)
-        {
+        private static double Func(double x) {
             return x + Math.Cos(x) - 1;
         }
 
-        private static void Print(List<double> array)
-        {
-            for (int i = 0; i < array.Count; ++i)
-            {
+        private static void Print(List<double> array) {
+            for (int i = 0; i < array.Count; ++i) {
                 Console.Write($"{array[i].ToString("0.00")}  ");
             }
         }
 
-        private static void Print(double[] array)
-        {
-            for (int i = 0; i < array.Length; ++i)
-            {
+        private static void Print(double[] array) {
+            for (int i = 0; i < array.Length; ++i) {
                 Console.Write($"{array[i].ToString("0.00")}  ");
             }
         }
 
-        private static double[] GaussianMethod(double[,] matrix, double[] f)
-        {
+        private static double[] GaussianMethod(double[,] matrix, double[] f) {
             double[] x = new double[n + 1];
 
-            for (int i = 0; i < n; i++)
-            {
+            for (int i = 0; i < n; i++) {
                 f[i] /= matrix[i, i];
 
-                for (int j = n - 1; j >= i; j--)
-                {
+                for (int j = n - 1; j >= i; j--) {
                     matrix[i, j] /= matrix[i, i];
                 }
 
-                for (int j = i + 1; j < n; j++)
-                {
+                for (int j = i + 1; j < n; j++) {
                     f[j] -= f[i] * matrix[j, i];
 
-                    for (int k = n - 1; k >= i; k--)
-                    {
+                    for (int k = n - 1; k >= i; k--) {
                         matrix[j, k] -= matrix[j, i] * matrix[i, k];
                     }
                 }
             }
 
-            for (int i = n - 1; i >= 0; i--)
-            {
+            for (int i = n - 1; i >= 0; i--) {
                 x[i] = f[i];
 
-                for (int j = i + 1; j < n; j++)
-                {
+                for (int j = i + 1; j < n; j++) {
                     x[i] -= x[j] * matrix[i, j];
                 }
             }
@@ -75,10 +61,8 @@ namespace PMN
             return x;
         }
 
-        public static void Exec()
-        {
-            for (int i = 0; i < n; ++i)
-            {
+        public static void Exec() {
+            for (int i = 0; i < n; ++i) {
                 xs.Add(h * i);
                 ys.Add(Func(xs[i]));
             }
@@ -94,46 +78,42 @@ namespace PMN
             double[] A = new double[n + 1];
             A = ys.ToArray();
 
-            double[,] Matrix = new double[n + 1, n + 1];
-            Matrix[0, 0] = 1;
-            Matrix[n - 1, n - 1] = 1;
+            double[,] matrix = new double[n + 1, n + 1];
+            matrix[0, 0] = 1;
+            matrix[n - 1, n - 1] = 1;
 
-            for (int i = 1; i < n - 1; i++)
-            {
-                Matrix[i, i - 1] += h;
-                Matrix[i, i] += 4 * h;
-                Matrix[i, i + 1] += h;
+            for (int i = 1; i < n - 1; i++) {
+                matrix[i, i - 1] += h;
+                matrix[i, i] += 4 * h;
+                matrix[i, i + 1] += h;
             }
 
-            double[] MatrixR = new double[n + 1];
-            MatrixR[0] = 0;
-            MatrixR[xs.Count - 1] = 0;
+            double[] matrixR = new double[n + 1];
+            matrixR[0] = 0;
+            matrixR[xs.Count - 1] = 0;
 
-            for (int i = 1; i <= xs.Count - 2; i++)
-            {
-                MatrixR[i] = 6 * ((ys[i + 1] - ys[i]) / h - (ys[i] - ys[i - 1]) / h);
+            for (int i = 1; i <= xs.Count - 2; i++) {
+                matrixR[i] = 6 * ((ys[i + 1] - ys[i]) / h - (ys[i] - ys[i - 1]) / h);
             }
-            
+
             Console.WriteLine();
 
             double[] C = new double[n];
-            C = GaussianMethod(Matrix, MatrixR);
+            C = GaussianMethod(matrix, matrixR);
             Print(C);
 
-            List<double> D = new List<double>();
-            List<double> B = new List<double>();
+            List<double> d = new List<double>();
+            List<double> b = new List<double>();
 
-            D.Add(0);
-            B.Add(0);
+            d.Add(0);
+            b.Add(0);
 
-            for (int i = 1; i < n + 1; i++)
-            {
-                D.Add((C[i] - C[i - 1]) / h);
+            for (int i = 1; i < n + 1; i++) {
+                d.Add((C[i] - C[i - 1]) / h);
             }
 
-            for (int i = 1; i < n + 1; i++)
-            {
-                B.Add(C[i] * h / 2 - D[i] * h * h / 6 + (ys[i] - ys[i - 1]) / h);
+            for (int i = 1; i < n + 1; i++) {
+                b.Add(C[i] * h / 2 - d[i] * h * h / 6 + (ys[i] - ys[i - 1]) / h);
             }
 
             double x1 = xs[0] + 0.3;
@@ -146,19 +126,19 @@ namespace PMN
 
             Console.WriteLine(p3);
 
-            double result1 = 
-                A[p1 + 1] + B[p1 + 1] * (x1 - xs[p1 + 1]) + C[p1 + 1] /
-                2 * (x1 - xs[p1 + 1]) * (x1 - xs[p1 + 1]) + D[p1 + 1] /
+            double result1 =
+                A[p1 + 1] + b[p1 + 1] * (x1 - xs[p1 + 1]) + C[p1 + 1] /
+                2 * (x1 - xs[p1 + 1]) * (x1 - xs[p1 + 1]) + d[p1 + 1] /
                 6 * (x1 - xs[p1 + 1]) * (x1 - xs[p1 + 1]) * (x1 - xs[p1 + 1]);
 
-            double result2 = 
-                A[p2 + 1] + B[p2 + 1] * (x2 - xs[p2 + 1]) + C[p2 + 1] / 
-                2 * (x2 - xs[p2 + 1]) * (x2 - xs[p2 + 1]) + D[p2 + 1] / 
+            double result2 =
+                A[p2 + 1] + b[p2 + 1] * (x2 - xs[p2 + 1]) + C[p2 + 1] /
+                2 * (x2 - xs[p2 + 1]) * (x2 - xs[p2 + 1]) + d[p2 + 1] /
                 6 * (x2 - xs[p2 + 1]) * (x2 - xs[p2 + 1]) * (x2 - xs[p2 + 1]);
 
-            double result3 = 
-                A[p3 + 1] + B[p3 + 1] * (x3 - xs[p3 + 1]) + C[p3 + 1] 
-                / 2 * (x3 - xs[p3 + 1]) * (x3 - xs[p3 + 1]) + D[p3 + 1] 
+            double result3 =
+                A[p3 + 1] + b[p3 + 1] * (x3 - xs[p3 + 1]) + C[p3 + 1]
+                / 2 * (x3 - xs[p3 + 1]) * (x3 - xs[p3 + 1]) + d[p3 + 1]
                 / 6 * (x3 - xs[p3 + 1]) * (x3 - xs[p3 + 1]) * (x3 - xs[p3 + 1]);
 
             Console.WriteLine();
@@ -168,9 +148,19 @@ namespace PMN
 
             Console.WriteLine();
 
-            for (int i = 1; i < n + 1; i++)
-            {
-                Console.WriteLine($"уравнение {i}:  {A[i].ToString("0.00", CultureInfo.InvariantCulture)}  + ({B[i].ToString("0.00", CultureInfo.InvariantCulture)} ) *(x- {xs[i].ToString("0.00", CultureInfo.InvariantCulture)}  )+({C[i].ToString("0.00", CultureInfo.InvariantCulture)} )/ 2 *(x-{xs[i].ToString("0.00", CultureInfo.InvariantCulture)} )*(x- {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})+( {D[i].ToString("0.00", CultureInfo.InvariantCulture)} )/ 6  *(x- {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})*(x-{xs[i].ToString("0.00", CultureInfo.InvariantCulture)})*(x-{xs[i].ToString("0.00", CultureInfo.InvariantCulture)})");
+            for (int i = 1; i < n + 1; i++) {
+                Console.WriteLine(
+                    $"уравнение {i}:  {A[i].ToString("0.00", CultureInfo.InvariantCulture)}" +
+                    $" + ({b[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" * (x- {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" + ({C[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" / 2 * (x - {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" * (x - {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" + ({d[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" / 6 * (x - {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" * (x - {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})" +
+                    $" * (x - {xs[i].ToString("0.00", CultureInfo.InvariantCulture)})"
+                );
             }
         }
     }
