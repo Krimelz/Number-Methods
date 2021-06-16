@@ -267,19 +267,19 @@ namespace PMN {
             coefs2 = CalcCoef(3);
             coefs3 = CalcCoef(4);
 
-            PrintArray(coefs1);
-            PrintArray(coefs2);
-            PrintArray(coefs3);
-
             double result1 = Distance(Func1, coefs1);
             double result2 = Distance(Func2, coefs2);
             double result3 = Distance(Func3, coefs3);
 
             Console.WriteLine();
 
-            Console.WriteLine($"Линейная = {result1}");
-            Console.WriteLine($"Квадратная = {result2}");
-            Console.WriteLine($"Кубическая = {result3}");
+            if (result1 > result2 && result1 > result3) {
+                Console.WriteLine($"Линейная = {result1}");
+			} else if (result2 > result1 && result2 > result3) {
+                Console.WriteLine($"Квадратная = {result2}");
+			} else {
+                Console.WriteLine($"Кубическая = {result3}");
+			}
         }
     }
 }
