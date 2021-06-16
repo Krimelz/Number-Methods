@@ -6,76 +6,129 @@ using System.Threading.Tasks;
 
 namespace PMN {
     class Lab3 {
-        private delegate double Func(double x, uint n = 0);
+        private delegate double Func(double x, double[] coefs);
 
         private static List<double> xs = new List<double>();
         private static List<double> ys = new List<double>();
 
-        private static double Func1(double x, uint n = 0) {
-            if (n == 1) {
+        private static double Derivative1(double x, uint n = 0) {
+            if (n == 0) {
+                return x;
+            } else if (n == 1) {
                 return 1;
-            } else if (n >= 2) {
+            } else {
                 return 0;
             }
-
-            return x;
         }
 
-        private static double Func2(double x, uint n = 0) {
-            if (n == 1) {
+        private static double Derivative2(double x, uint n = 0) {
+            if (n == 0) {
+                return x * x;
+            } else if (n == 1) {
                 return x;
             } else if (n == 2) {
                 return 1;
-            } else if (n >= 3) {
+            } else {
                 return 0;
             }
-
-            return x * x;
         }
 
-        private static double Func3(double x, uint n = 0) {
-            if (n == 1) {
+        private static double Derivative3(double x, uint n = 0) {
+            if (n == 0) {
+                return x * x * x;
+			} else if (n == 1) {
                 return x * x;
             } else if (n == 2) {
                 return x;
             } else if (n == 3) {
                 return 1;
-            } else if (n >= 4) {
+            } else {
                 return 0;
             }
-
-            return x * x * x;
         }
 
-        private static double Distance(Func func) {
+        private static double Func1(double x, double[] coefs) {
+            return coefs[0] * x + coefs[1];
+		}
+
+        private static double Func2(double x, double[] coefs) {
+            return coefs[0] * x * x + coefs[1] * x + coefs[2];
+		}
+
+        private static double Func3(double x, double[] coefs) {
+            return coefs[0] * x * x * x + coefs[1] * x * x + coefs[2] * x + coefs[3];
+		}
+
+        private static double Distance(Func func, double[] coefs) {
             double sum = 0f;
 
             for (int i = 0; i < xs.Count; ++i) {
-                sum += Math.Pow(ys[i] - func(xs[i]), 2f);
+                sum += Math.Pow(ys[i] - func(xs[i], coefs), 2f);
             }
 
             return sum;
         }
 
-        private static double[] CalcCoef(Func f, int n) {
+        private static double[] CalcCoef(int n) {
             double[] coefs = new double[n];
             double[,] a = new double[n, n];
             double[] b = new double[n];
 
             if (n == 2)  {
                 for (int i = 0; i < n; i++)  {
-                    a[0, 0] += xs[i] * f(xs[i]);
-                    a[0, 1] += f(xs[i]);
+                    a[0, 0] += xs[i] * xs[i];
+                    a[0, 1] += xs[i];
                     a[1, 0] += xs[i];
-                    a[1, 1] += f(xs[i], 1);
+                    a[1, 1] = n;
 
-                    b[0] += xs[i] * f(xs[i]);
-                    b[1] += xs[i] * f(xs[i], 1);
+                    b[0] += xs[i] * ys[i];
+                    b[1] += ys[i];
                 }
-            }  else if (n == 3) {
-                // TODO
-            }  else if (n == 4) {
-                // TODO
+            } else if (n == 3) {
+                for (int i = 0; i < n; i++) {
+                    a[0, 0] += xs[i] * xs[i] * xs[i] * xs[i];
+                    a[0, 1] += xs[i] * xs[i] * xs[i];
+                    a[0, 2] += xs[i] * xs[i];
+                                
+                    a[1, 0] += xs[i] * xs[i] * xs[i];
+                    a[1, 1] += xs[i] * xs[i];
+                    a[1, 2] += xs[i];
+                                
+                    a[2, 0] += xs[i] * xs[i];
+                    a[2, 1] += xs[i];
+                    a[2, 2] = n;
+
+                    b[0] += xs[i] * xs[i] * ys[i];
+                    b[1] += xs[i] * ys[i];
+                    b[2] += ys[i];
+				}
+            } else if (n == 4) {
+                for (int i = 0; i < n; i++) {
+                    a[0, 0] += xs[i] * xs[i] * xs[i] * xs[i] * xs[i] * xs[i];
+                    a[0, 1] += xs[i] * xs[i] * xs[i] * xs[i] * xs[i];
+                    a[0, 2] += xs[i] * xs[i] * xs[i] * xs[i];
+                    a[0, 3] += xs[i] * xs[i] * xs[i];
+
+                    a[1, 0] += xs[i] * xs[i] * xs[i] * xs[i] * xs[i];
+                    a[1, 1] += xs[i] * xs[i] * xs[i] * xs[i];
+                    a[1, 2] += xs[i] * xs[i] * xs[i];
+                    a[1, 3] += xs[i] * xs[i];
+
+                    a[2, 0] += xs[i] * xs[i] * xs[i] * xs[i];
+                    a[2, 1] += xs[i] * xs[i] * xs[i];
+                    a[2, 2] += xs[i] * xs[i];
+                    a[2, 3] += xs[i];
+
+                    a[3, 0] += xs[i] * xs[i] * xs[i];
+                    a[3, 1] += xs[i] * xs[i];
+                    a[3, 2] += xs[i];
+                    a[3, 3] = n;
+
+                    b[0] += xs[i] * xs[i] * xs[i] * ys[i];
+                    b[1] += xs[i] * xs[i] * ys[i];
+                    b[2] += xs[i] * ys[i];
+                    b[3] += ys[i];
+                }
             }
 
             coefs = Kramer(a, b, n);
@@ -88,11 +141,7 @@ namespace PMN {
             double d = Determinant(a);
 
             for (int i = 0; i < n; i++) {
-                result[i] = Determinant(CreateMatrix(a, b, i));
-            }
-
-            for (int i = 0; i < result.Length; i++) {
-                result[i] = d / result[i];
+                result[i] = Determinant(CreateMatrix(a, b, i)) / d;
             }
 
             return result;
@@ -101,7 +150,7 @@ namespace PMN {
         private static double[,] CreateMatrix(double[,] a, double[] b, int index) {
             double[,] matrix = new double[a.GetLength(0), a.GetLength(1)];
 
-            matrix = a;
+            Array.Copy(a, matrix, a.GetLength(0) * a.GetLength(1));
 
             for (int i = 0; i < b.Length; i++) {
                 matrix[i, index] = b[i];
@@ -114,7 +163,7 @@ namespace PMN {
             double l = 0f;
             double r = 0f;
 
-            for (int i = 0; i < a.GetLength(0); i++)  {
+            for (int i = 0; i < a.GetLength(0) - 1; i++)  {
                 double p = 1f;
 
                 for (int j = 0; j < a.GetLength(1); j++) {
@@ -125,7 +174,7 @@ namespace PMN {
                 l += p;
             }
 
-            for (int i = 0; i < a.GetLength(0); i++) {
+            for (int i = 0; i < a.GetLength(0) - 1; i++) {
                 double p = 1f;
 
                 for (int j = 0; j < a.GetLength(1); j++) {
@@ -165,7 +214,7 @@ namespace PMN {
             Console.WriteLine("|");
         }
 
-        public static void Exec() {
+        private void Read() {
             int n = int.Parse(Console.ReadLine());
 
             for (int i = 0; i < n; ++i) {
@@ -179,13 +228,58 @@ namespace PMN {
                 xs.Add(x);
                 ys.Add(y);
             }
+        }
+
+        private static void PrintArray(double[] collection) {
+			foreach (var item in collection) {
+                Console.Write(item.ToString() + " ");
+			}
+
+            Console.WriteLine();
+		}
+
+        public static void Exec() {
+            // Read();
+
+			xs.Add(0f);
+			xs.Add(0.1f);
+			xs.Add(0.2f);
+			xs.Add(0.3f);
+			xs.Add(0.4f);
+			xs.Add(0.5f);
+			xs.Add(0.6f);
+
+            ys.Add(3.02f);
+            ys.Add(2.81f);
+            ys.Add(2.57f);
+            ys.Add(2.39f);
+            ys.Add(2.18f);
+            ys.Add(1.99f);
+            ys.Add(1.81f);
 
             PrintTable(xs, ys, 4);
 
-            double[] c = new double[2];
-            c = CalcCoef(Func1, 2);
+            double[] coefs1 = new double[2];
+            double[] coefs2 = new double[3];
+            double[] coefs3 = new double[4];
 
-            Console.ReadLine();
+            coefs1 = CalcCoef(2);
+            coefs2 = CalcCoef(3);
+            coefs3 = CalcCoef(4);
+
+            PrintArray(coefs1);
+            PrintArray(coefs2);
+            PrintArray(coefs3);
+
+            double result1 = Distance(Func1, coefs1);
+            double result2 = Distance(Func2, coefs2);
+            double result3 = Distance(Func3, coefs3);
+
+            Console.WriteLine();
+
+            Console.WriteLine($"Линейная = {result1}");
+            Console.WriteLine($"Квадратная = {result2}");
+            Console.WriteLine($"Кубическая = {result3}");
         }
     }
 }
