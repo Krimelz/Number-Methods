@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 namespace PMN {
     class Program {
         public static void Main(string[] args) {
+            
+            Lab5.Exec(); // Done
             //Lab2.Exec(); // Done 
-            Lab3.Exec(); // Done
-            //Lab5.Exec();
+            //Lab10.Exec(); // Done
+            
             //Lab6.Exec();
             //Lab7.Exec();
             //Lab8.Exec();
             //Lab9.Exec();
-            //Lab10.Exec(); // Done
             //Lab11.Exec();
             //Lab13.Exec();
             //Lab14.Exec();
